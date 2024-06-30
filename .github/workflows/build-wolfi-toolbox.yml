@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   push-ghcr:
+    if: github.repository != "michaelhaaf/toolboxes"
     name: Build and push image
     runs-on: ubuntu-22.04
     permissions:
