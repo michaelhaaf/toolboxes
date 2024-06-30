@@ -1,6 +1,12 @@
 [Unit]
 Description=Fedora Toolbox for your distrobox fun
 
+[Install]
+WantedBy=default.target
+
+[Service]
+TimeoutStartSec=900
+
 [Container]
 Annotation=run.oci.keep_original_groups=1
 AutoUpdate=registry
