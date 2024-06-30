@@ -51,7 +51,7 @@ jobs:
       # Maximize build space for DX
       - name: Maximize build space
         uses: ublue-os/remove-unwanted-software@v7
-        if: matrix.image_name == "cli-dx"
+        if: matrix.image_name == 'cli-dx'
 
       # Build image using Buildah action
       - name: Build Image

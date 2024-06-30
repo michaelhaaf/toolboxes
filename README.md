@@ -37,7 +37,7 @@ The eventual plan is to have `cli` and `cli-dx` use [`nix`][nix] in a similar ma
 
 ## Automatic Startup Configuration
 
-The problem with customized atomic images is that the customizations need to be applied at some point in time, which itself takes time. I would much rather time-consuming processes take place BEFORE I log into my system, so that the CLI environments I want to use can start instantly by the time I've logged in.
+The problem with customized images is that the customizations need to be applied at some point in time, which itself takes time. I would much rather time-consuming processes take place BEFORE I log into my system, so that the CLI environments I want to use can start instantly by the time I've logged in.
 
 One way we can do this is to use [`systemd`][systemd] to start up-to-date distroboxes automatically when you log in. You could define the [`systemd.unit`][systemd-unit] files yourself, but the folks behind `podman` have set up [quadlets][podman-quadlets] which take care of some of the leg-work for you.
 
@@ -119,4 +119,4 @@ TODO
 [boxkit]: https://github.com/ublue-os/boxkit
 [systemd]: https://systemd.io/
 [systemd-unit]: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
-
+[bluefin-cli]: https://universal-blue.discourse.group/t/the-bluefin-cli-container/704
