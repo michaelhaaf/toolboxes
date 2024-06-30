@@ -8,8 +8,8 @@ LABEL com.github.containers.toolbox="true" \
 
 ARG IMAGE_NAME="${IMAGE_NAME:-cli}"
 
-COPY ./toolboxes/wolfi-toolbox/packages.cli \
-     ./toolboxes/wolfi-toolbox/packages.cli-dx \
+COPY ./toolboxes/cli/packages.cli \
+     ./toolboxes/cli/packages.cli-dx \
      /tmp/
 
 # Update image
