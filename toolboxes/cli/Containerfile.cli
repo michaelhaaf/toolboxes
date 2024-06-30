@@ -10,6 +10,7 @@ ARG IMAGE_NAME="${IMAGE_NAME:-cli}"
 
 COPY ./toolboxes/cli/packages.cli \
      ./toolboxes/cli/packages.cli-dx \
+     ./toolboxes/cli/packages.custom \
      /tmp/
 
 # Update image
@@ -18,6 +19,7 @@ RUN apk update && \
 
 # Add optional packages
 RUN grep -v '^#' /tmp/packages.cli | xargs apk add && \
+    grep -v '^#' /tmp/packages.custom | xargs apk add && \
     if [[ "${IMAGE_NAME}" =~ "dx" ]]; then \
         grep -v '^#' /tmp/packages.cli-dx | xargs apk add \
     ; fi && \
