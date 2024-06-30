@@ -70,6 +70,16 @@ RUN mkdir -p /usr/local/bin  && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/flatpak && \ 
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/podman && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/rpm-ostree
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/pass && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/pass-otp && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/gpg && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/gpg-agent && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/wl-copy && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/wl-paste && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/wtype && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/fuzzel && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/tailscale && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/journalctl
 
 # Change root shell to BASH
 RUN sed -i -e '/^root/s/\/bin\/ash/\/bin\/bash/' /etc/passwd
