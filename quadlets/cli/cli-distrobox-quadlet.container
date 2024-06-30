@@ -10,7 +10,7 @@ TimeoutStartSec=900
 [Container]
 Annotation=run.oci.keep_original_groups=1
 AutoUpdate=registry
-ContainerName=cli-quadlet
+ContainerName=cli
 Environment=SHELL=%s
 Environment=HOME=%h
 Environment=container=podman
