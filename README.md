@@ -30,10 +30,18 @@ The upstream repository gestures at solutions to all of the above via the [`boxk
 ## Custom Images
 
 In addition to the images defined in [ublue-os/toolboxes][upstream], this repository defines the following images:
-- `cli` - a lean Wolfi base image that I would ostensibly use for day-to-day CLI.
+- `cli` - a lean Wolfi base image that I would ostensibly use for day-to-day CLI, including [`nix`][nix] for a similar purpose to [Bluefin-CLI][bluefin-cli] including [`brew`][brew] -- that is, to fill out the "long tail" of existing software that is not yet packaged on `wolfi`.
 - `cli-dx` - a larger Wolfi base image with additional developer packages, which is what I actually use for day-to-day CLI since I tend to develop things and want to have dependencies like `gcc` and `go` handy.
 
-The eventual plan is to have `cli` and `cli-dx` use [`nix`][nix] in a similar manner to how [Bluefin-CLI][bluefin-cli] uses [`brew`][brew] -- that is, to fill out the "long tail" of existing software that is not yet packaged on `wolfi`. That would be pretty cool! We'll see.
+### Installing `nix`
+
+TODO
+
+- https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#in-a-container
+
+### Using `nix`
+
+TODO
 
 ## Automatic Startup Configuration
 
@@ -103,9 +111,9 @@ UNLINK: .config/containers/systemd/wolfi-dx-distrobox-quadlet.container
 
 TODO
 
-## Expected Behavior
+## Misc
 
-TODO
+- [Container save and restore](https://distrobox.it/useful_tips/#container-save-and-restore): to use with generic ubuntu/fedora/etc. images on particular projects; that way we have a default container built using the processes in this repo, and container customizations can be saved/restored in a programmatic way.
 
 
 [upstream]: https://github.com/ublue-os/toolboxes
