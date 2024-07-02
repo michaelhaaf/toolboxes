@@ -57,7 +57,23 @@ One way we can do this is to use [`systemd`][systemd] to start up-to-date distro
 
 You can find sample quadlet files in the `quadlets/` directory of this repo. You can automate the process of placing the quadlet files in the correct place using GNU `stow`; see the next section for that.
 
-Once your files are placed correctly, you should be able to start the service (and create the distrobox) using `systemctl start --user {service-name}`. 
+Once your files are placed correctly, generate a systemd service from the Quadlet file by reloading the systemd user daemon:
+
+```
+$ systemctl --user daemon-reload
+```
+
+Then, you should be able to start the service (and create the distrobox) and make sure the container is running:
+
+```
+$ systemctl start --user {service-name}
+$ podman ps
+
+
+$ distrobox list
+
+
+``` 
 
 Finally, you can ensure that quadlet service starts on boot automatically by adding the following section to the `.container` file:
 
@@ -109,7 +125,20 @@ UNLINK: .config/containers/systemd/wolfi-dx-distrobox-quadlet.container
 
 ## Automatic Updates Configuration
 
-TODO
+Check if a new image is available via `--dry-run`:
+
+```
+$ podman auto-update --dry-run --format "{{.Image}} {{.Updated}}"
+
+```
+
+Update the image:
+
+```
+$ podman auto-update
+UNIT           CONTAINER                     IMAGE                                     POLICY      UPDATED
+
+```
 
 ## Misc
 
