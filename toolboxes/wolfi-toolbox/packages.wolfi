@@ -1,5 +1,6 @@
 bash
 bc
+bind-tools
 bzip2
 coreutils
 curl
