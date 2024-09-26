@@ -1,5 +1,5 @@
 [Unit]
-Description=Arch Toolbox for your distrobox fun
+Description=Ubuntu Toolbox for your distrobox fun
 
 [Install]
 WantedBy=default.target
@@ -10,13 +10,13 @@ TimeoutStartSec=900
 [Container]
 Annotation=run.oci.keep_original_groups=1
 AutoUpdate=registry
-ContainerName=arch-distrobox-quadlet
+ContainerName=ubuntu
 Environment=SHELL=%s
 Environment=HOME=%h
 Environment=container=podman
 Exec=--verbose --name %u --user %U --group %G --home %h --init "0" --nvidia "1" -- " "
-Image=ghcr.io/ublue-os/arch-distrobox:latest
-HostName=arch-distrobox.%l
+Image=ghcr.io/ublue-os/ubuntu-toolbox:latest
+HostName=ubuntu-toolbox.%l
 Label=manager=distrobox
 Network=host
 PodmanArgs=--entrypoint /usr/bin/entrypoint
