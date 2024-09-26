@@ -1,4 +1,4 @@
-# michaelhaaf/toolboxes
+# michaelhaaf/distroboxes
 
 Fork of [ublue-os/toolboxes][upstream]. The upstream repository provides the template for:
 
@@ -7,9 +7,10 @@ Fork of [ublue-os/toolboxes][upstream]. The upstream repository provides the tem
 
 This fork features the following customizations that I find useful that, if generally useful, I may contribute upstream:
 
-- custom distrobox image definition based on the upstream `wolfi` image
-- sample `.config/container` configurations that enable [podman systemd quadlets][podman-quadlets] on user login, symlinked to this repository using [GNU Stow][gnu-stow]
-- github actions for CI/CD for all customizations
+- two custom distrobox image definition based on the upstream `wolfi` image
+- `.config/container` configurations for fedora, ubuntu, arch, and custom image [podman systemd quadlets][podman-quadlets].
+- quadlet dotfile management using [GNU Stow][gnu-stow]
+- github actions for CI/CD for any image customizations
 - documentation demonstrating how to set this up yourself and what the expected behavior should be
 
 Feel free to adapt and use these customizations yourself -- this fork retains the [Apache License 2.0](./LICENSE) license of the [upstream repository][upstream]
@@ -38,6 +39,8 @@ In addition to the images defined in [ublue-os/toolboxes][upstream], this reposi
 TODO
 
 - https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#in-a-container
+- https://gist.github.com/danmack/b76ef257e0fd9dda906b4c860f94a591#nix-package-manager-install-on-alpine-linux
+- https://home-manager.dev/manual/23.05/index.html#sec-flakes-standalone
 
 ### Using `nix`
 
@@ -55,6 +58,8 @@ One way we can do this is to use [`systemd`][systemd] to start up-to-date distro
 2. Start the quadlet by using `systemctl start`
 3. Enable the quadlet by default on boot using the `[Install]` unit file definition.
 
+The steps below show how to do this.
+
 You can find sample quadlet files in the `quadlets/` directory of this repo. You can automate the process of placing the quadlet files in the correct place using GNU `stow`; see the next section for that.
 
 Once your files are placed correctly, generate a systemd service from the Quadlet file by reloading the systemd user daemon:
@@ -63,17 +68,18 @@ Once your files are placed correctly, generate a systemd service from the Quadle
 $ systemctl --user daemon-reload
 ```
 
-Then, you should be able to start the service (and create the distrobox) and make sure the container is running:
+Then, you should be able to start the service (and create the distrobox) and make sure the container is running. You can do this for all of the definitions I've provided, but let's take `arch-quadlet.service` for an example:
 
 ```
-$ systemctl start --user {service-name}
+$ systemctl start --user arch-quadlet.service
 $ podman ps
-
+CONTAINER ID  IMAGE                                   COMMAND               CREATED         STATUS         PORTS       NAMES
+81801de707b4  ghcr.io/ublue-os/arch-distrobox:latest  --verbose --name ...  24 seconds ago  Up 24 seconds              arch
 
 $ distrobox list
-
-
-``` 
+ID           | NAME                 | STATUS             | IMAGE                         
+81801de707b4 | arch                 | Up 55 seconds      | ghcr.io/ublue-os/arch-distrobox:latest
+```
 
 Finally, you can ensure that quadlet service starts on boot automatically by adding the following section to the `.container` file:
 
@@ -90,7 +96,9 @@ For more information:
 
 ### Using `make` and `stow` to set up `.config/containers`
 
-TODO
+I've set up a `make` file with three different targets (`default`, `delete`, and `all`). These use `stow` to automate placing the quadlet definition files in the `~/.config/containers/systemd/` folder independent of where you place this repository. Run these commands from the root of this repository.
+
+#### `make`
 
 ```
 $ make
@@ -100,6 +108,23 @@ LINK: .config/containers/systemd/ubuntu-distrobox-quadlet.container => ../../../
 LINK: .config/containers/systemd/wolfi-distrobox-quadlet.container => ../../../opt/toolboxes/stowfiles/.config/containers/systemd/wolfi-distrobox-quadlet.container
 LINK: .config/containers/systemd/wolfi-dx-distrobox-quadlet.container => ../../../opt/toolboxes/stowfiles/.config/containers/systemd/wolfi-dx-distrobox-quadlet.container
 ```
+
+#### `make delete`
+
+This removes existing symlinks:
+
+```
+$ make delete
+stow --verbose --target=$HOME --delete stowfiles/
+UNLINK: .config/containers/systemd/fedora-distrobox-quadlet.container
+UNLINK: .config/containers/systemd/ubuntu-distrobox-quadlet.container
+UNLINK: .config/containers/systemd/wolfi-distrobox-quadlet.container
+UNLINK: .config/containers/systemd/wolfi-dx-distrobox-quadlet.container
+```
+
+#### `make all`
+
+This combines `make delete` and the default `make` command to replace existing symlinks:
 
 ```
 $ make all
@@ -114,36 +139,35 @@ LINK: .config/containers/systemd/wolfi-distrobox-quadlet.container => ../../../o
 LINK: .config/containers/systemd/wolfi-dx-distrobox-quadlet.container => ../../../opt/toolboxes/stowfiles/.config/containers/systemd/wolfi-dx-distrobox-quadlet.container (reverts previous action)
 ```
 
-```
-$ make delete
-stow --verbose --target=$HOME --delete stowfiles/
-UNLINK: .config/containers/systemd/fedora-distrobox-quadlet.container
-UNLINK: .config/containers/systemd/ubuntu-distrobox-quadlet.container
-UNLINK: .config/containers/systemd/wolfi-distrobox-quadlet.container
-UNLINK: .config/containers/systemd/wolfi-dx-distrobox-quadlet.container
-```
-
 ## Automatic Updates Configuration
 
-Check if a new image is available via `--dry-run`:
+Check if new images are available via `podman auto-update --dry-run`:
 
 ```
-$ podman auto-update --dry-run --format "{{.Image}} {{.Updated}}"
-
+$ podman auto-update --dry-run
+            UNIT                    CONTAINER              IMAGE                                   POLICY      UPDATED
+            cli-quadlet.service     27045f00fb8e (cli)     ghcr.io/michaelhaaf/cli:latest          registry    pending
+            cli-dx-quadlet.service  14bf4200f9b4 (cli-dx)  ghcr.io/michaelhaaf/cli-dx:latest       registry    pending
+            arch-quadlet.service    1acbcfa3c350 (arch)    ghcr.io/ublue-os/arch-distrobox:latest  registry    pending
+            fedora-quadlet.service  96b79aa599ca (fedora)  ghcr.io/ublue-os/fedora-toolbox:latest  registry    pending
+            ubuntu-quadlet.service  9636bea3dd6e (ubuntu)  ghcr.io/ublue-os/ubuntu-toolbox:latest  registry    pending
 ```
 
-Update the image:
+If `UPDATED` is `pending`, then updates are available: update the images with `podman auto-update`. Successive `--dry-runs` will show that `UPDATED` is `false`, indicating that a run of `auto-update` would not update the image (so you have the latest version):
 
 ```
-$ podman auto-update
-UNIT           CONTAINER                     IMAGE                                     POLICY      UPDATED
-
+$ podman auto-update --dry-run
+            UNIT                    CONTAINER              IMAGE                                   POLICY      UPDATED
+            cli-quadlet.service     27045f00fb8e (cli)     ghcr.io/michaelhaaf/cli:latest          registry    false
+            cli-dx-quadlet.service  14bf4200f9b4 (cli-dx)  ghcr.io/michaelhaaf/cli-dx:latest       registry    false
+            arch-quadlet.service    1acbcfa3c350 (arch)    ghcr.io/ublue-os/arch-distrobox:latest  registry    false
+            fedora-quadlet.service  96b79aa599ca (fedora)  ghcr.io/ublue-os/fedora-toolbox:latest  registry    false
+            ubuntu-quadlet.service  9636bea3dd6e (ubuntu)  ghcr.io/ublue-os/ubuntu-toolbox:latest  registry    false
 ```
 
-## Misc
+## Future improvements
 
 - [Container save and restore](https://distrobox.it/useful_tips/#container-save-and-restore): to use with generic ubuntu/fedora/etc. images on particular projects; that way we have a default container built using the processes in this repo, and container customizations can be saved/restored in a programmatic way.
-
 
 [upstream]: https://github.com/ublue-os/toolboxes
 [nix]: https://nixos.org/download/
