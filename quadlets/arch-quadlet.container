@@ -1,5 +1,5 @@
 [Unit]
-Description=Arch Toolbox for your distrobox fun
+Description=Arch Distrobox
 
 [Install]
 WantedBy=default.target
@@ -16,7 +16,7 @@ Environment=HOME=%h
 Environment=container=podman
 Exec=--verbose --name %u --user %U --group %G --home %h --init "0" --nvidia "1" -- " "
 Image=ghcr.io/ublue-os/arch-distrobox:latest
-HostName=arch-distrobox.%l
+HostName=arch.%l
 Label=manager=distrobox
 Network=host
 PodmanArgs=--entrypoint /usr/bin/entrypoint
