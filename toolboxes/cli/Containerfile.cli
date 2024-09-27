@@ -68,11 +68,11 @@ ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
 # https://gist.github.com/danmack/b76ef257e0fd9dda906b4c860f94a591
 RUN groupadd nix-users && \
     chgrp nix-users /nix/var/nix/daemon-socket && \
-    chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
+    chmod ug=rwx,o= /nix/var/nix/daemon-socket
 
 RUN cp /root/.nix-profile/bin/nix-daemon /usr/sbin && \
     chmod a+rx /etc/init.d/nix-daemon && \
-    rc-update add nix-daemon &&
+    rc-update add nix-daemon && \
     rc-service nix-daemon start
 
 # Get Distrobox-host-exec and host-spawn
