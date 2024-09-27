@@ -72,7 +72,6 @@ RUN groupadd nix-users && \
 
 RUN cp /root/.nix-profile/bin/nix-daemon /usr/sbin && \
     chmod a+rx /etc/init.d/nix-daemon && \
-    touch /run/openrc/softlevel && \
     rc-update add nix-daemon default
 
 # Get Distrobox-host-exec and host-spawn
