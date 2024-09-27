@@ -13,7 +13,7 @@ COPY ./toolboxes/cli/packages.cli \
      ./toolboxes/cli/packages.custom \
      /tmp/
 
-COPY ./toolboxes/bluefin-cli/files /
+COPY ./toolboxes/cli/files /
 
 # Update image
 RUN apk update && \
