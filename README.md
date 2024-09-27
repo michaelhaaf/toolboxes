@@ -194,6 +194,7 @@ You can make sure this is happening by running commands such as `systemctl statu
 ## Future improvements
 
 - [Container save and restore](https://distrobox.it/useful_tips/#container-save-and-restore): to use with generic ubuntu/fedora/etc. images on particular projects; that way we have a default container built using the processes in this repo, and container customizations can be saved/restored in a programmatic way.
+- [Podman image rollbacks](https://www.redhat.com/sysadmin/podman-auto-updates-rollbacks): probably should try this out and document it before I run into issues, but who am I kidding.
 
 [upstream]: https://github.com/ublue-os/toolboxes
 [nix]: https://nixos.org/download/
