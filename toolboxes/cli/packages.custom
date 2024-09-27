@@ -1,3 +1,4 @@
+openrc
 atuin
 bat
 delta
@@ -25,3 +26,4 @@ lazygit
 gettext
 neovim
 emacs
+strace

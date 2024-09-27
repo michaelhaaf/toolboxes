@@ -90,6 +90,7 @@ RUN mkdir -p /usr/local/bin  && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/wtype && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/fuzzel && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/tailscale && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/systemctl && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/journalctl
 
 # Change root shell to BASH
