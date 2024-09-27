@@ -139,7 +139,11 @@ LINK: .config/containers/systemd/wolfi-distrobox-quadlet.container => ../../../o
 LINK: .config/containers/systemd/wolfi-dx-distrobox-quadlet.container => ../../../opt/toolboxes/stowfiles/.config/containers/systemd/wolfi-dx-distrobox-quadlet.container (reverts previous action)
 ```
 
-## Automatic Updates Configuration
+## Image Update Management
+
+CLI for manual updates using `podman auto update`, [confusing the audience][ben-finegold-confusing-the-audience]. `systemd` services for automating the update/refresh of container images.
+
+### Manual updates with CLI
 
 Check if new images are available via `podman auto-update --dry-run`:
 
@@ -165,6 +169,28 @@ $ podman auto-update --dry-run
             ubuntu-quadlet.service  9636bea3dd6e (ubuntu)  ghcr.io/ublue-os/ubuntu-toolbox:latest  registry    false
 ```
 
+### Automation with `systemd`
+
+TODO
+
+From the [podman auto-update docs][podman-auto-update]:
+
+> To configure a container for auto updates, it must be created with the `io.containers.autoupdate` label or the `AutoUpdate` field in quadlet(5) with one of the following two values:
+>
+>    `registry`: If the label is present and set to registry, Podman reaches out to the corresponding registry to check if the image has been updated. The label image is an alternative to registry maintained for backwards compatibility. An image is considered updated if the digest in the local storage is different than the one of the remote image. If an image must be updated, Podman pulls it down and restarts the systemd unit executing the container. The registry policy requires a fully-qualified image reference (e.g., quay.io/podman/stable:latest) to be used to create the container. This enforcement is necessary to know which image to actually check and pull. If an image ID was used, Podman would not know which image to check/pull anymore.
+>
+>    `local`: If the autoupdate label is set to local, Podman compares the image digest of the container to the one in the local container storage. If they differ, the local image is considered to be newer and the systemd unit gets restarted.
+
+The images in this repository use `registry` for the `AutoUpdate` field by default.
+
+Furthermore: 
+
+> After a successful update of an image, the containers using the image get updated by restarting the systemd units they run in.
+>
+> Podman ships with a `podman-auto-update.service` systemd unit. This unit is triggered daily at midnight by the `podman-auto-update.timer` systemd timer. The timer can be altered for custom time-based updates if desired. The unit can further be invoked by other systemd units (e.g., via the dependency tree) or manually via `systemctl start podman-auto-update.service`.
+
+You can make sure this is happening by running commands such as `systemctl status --user podman-auto-update.service`. If inactive, it can be enabled and started using `systemctl enable` and `systemctl start`.
+
 ## Future improvements
 
 - [Container save and restore](https://distrobox.it/useful_tips/#container-save-and-restore): to use with generic ubuntu/fedora/etc. images on particular projects; that way we have a default container built using the processes in this repo, and container customizations can be saved/restored in a programmatic way.
@@ -173,6 +199,7 @@ $ podman auto-update --dry-run
 [nix]: https://nixos.org/download/
 [brew]: https://brew.sh
 [podman-quadlets]: https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+[podman-auto-update]: https://docs.podman.io/en/latest/markdown/podman-auto-update.1.html
 [gnu-stow]: https://www.gnu.org/software/stow/
 [distrobox]: https://distrobox.it/
 [silverblue]: https://fedoraproject.org/atomic-desktops/silverblue/
@@ -181,3 +208,4 @@ $ podman auto-update --dry-run
 [systemd]: https://systemd.io/
 [systemd-unit]: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
 [bluefin-cli]: https://universal-blue.discourse.group/t/the-bluefin-cli-container/704
+[ben-finegold-confusing-the-audience]: https://www.youtube.com/watch?v=qVt6nglrmh4
