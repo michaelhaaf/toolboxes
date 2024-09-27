@@ -41,6 +41,7 @@ TODO
 - https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#in-a-container
 - https://gist.github.com/danmack/b76ef257e0fd9dda906b4c860f94a591#nix-package-manager-install-on-alpine-linux
 - https://home-manager.dev/manual/23.05/index.html#sec-flakes-standalone
+- https://nix.dev/manual/nix/2.18/installation/multi-user
 
 ### Using `nix`
 

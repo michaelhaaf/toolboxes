@@ -13,6 +13,8 @@ COPY ./toolboxes/cli/packages.cli \
      ./toolboxes/cli/packages.custom \
      /tmp/
 
+COPY ./toolboxes/bluefin-cli/files /
+
 # Update image
 RUN apk update && \
     apk upgrade
@@ -61,6 +63,17 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
   --init none \
   --no-confirm
 ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+
+# Make nix accessible for non-root user without systemd
+# https://gist.github.com/danmack/b76ef257e0fd9dda906b4c860f94a591
+RUN groupadd nix-users && \
+    chgrp nix-users /nix/var/nix/daemon-socket && \
+    chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
+
+RUN cp /root/.nix-profile/bin/nix-daemon /usr/sbin && \
+    chmod a+rx /etc/init.d/nix-daemon && \
+    rc-update add nix-daemon &&
+    rc-service nix-daemon start
 
 # Get Distrobox-host-exec and host-spawn
 RUN git clone https://github.com/89luca89/distrobox.git --single-branch /tmp/distrobox && \
