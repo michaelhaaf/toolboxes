@@ -15,7 +15,7 @@ if test "$(id -u)" -gt "0"; then
     printf "%s[ OK ]%s\n" "${blue}" "${normal}"
   fi
 
-  if test ! -d /nix/; then
+  if test -d /nix/; then
     printf "Setting up nix...\t\t\t "
     sudo usermod -a -G nix-users "${USER}"
   fi
