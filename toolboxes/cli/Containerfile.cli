@@ -71,8 +71,7 @@ RUN groupadd nix-users && \
     chmod ug=rwx,o= /nix/var/nix/daemon-socket
 
 RUN chmod a+rx /etc/init.d/nix-daemon && \
-    rc-update add nix-daemon default && \
-    rc-service nix-daemon start
+    rc-update add nix-daemon default
 
 # Get Distrobox-host-exec and host-spawn
 RUN git clone https://github.com/89luca89/distrobox.git --single-branch /tmp/distrobox && \
