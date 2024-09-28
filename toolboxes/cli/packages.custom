@@ -27,3 +27,4 @@ gettext
 neovim
 emacs
 strace
+fontconfig
