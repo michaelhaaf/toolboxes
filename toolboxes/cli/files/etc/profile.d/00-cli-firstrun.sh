@@ -15,9 +15,12 @@ if test "$(id -u)" -gt "0"; then
     printf "%s[ OK ]%s\n" "${blue}" "${normal}"
   fi
 
-  if test -d /nix/; then
+  if test ! -f /run/openrc/softlevel; then
     printf "Setting up nix...\t\t\t "
+    sudo mkdir -p /run/openrc
+    sudo touch /run/openrc/softlevel
     sudo usermod -a -G nix-users "${USER}"
+    printf "%s[ OK ]%s\n" "${blue}" "${normal}"
   fi
 
   if test ! -f /etc/cli.firstrun; then
