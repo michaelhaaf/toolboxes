@@ -2,15 +2,15 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 # Thanks to Nuno do Carmo for the initial prototype
 
 LABEL com.github.containers.toolbox="true" \
-      usage="This image is meant to be used with the Toolbox or Distrobox command" \
-      summary="A blank Wolfi distrobox, suitable for development" \
-      maintainer="jorge.castro@gmail.com"
+    usage="This image is meant to be used with the Toolbox or Distrobox command" \
+    summary="A blank Wolfi distrobox, suitable for development" \
+    maintainer="jorge.castro@gmail.com"
 
 ARG IMAGE_NAME="${IMAGE_NAME:-wolfi-toolbox}"
 
 COPY ./toolboxes/wolfi-toolbox/packages.wolfi \
-     ./toolboxes/wolfi-toolbox/packages.wolfi-dx \
-     /tmp/
+    ./toolboxes/wolfi-toolbox/packages.wolfi-dx \
+    /tmp/
 
 # Update image
 RUN apk update && \
@@ -19,7 +19,7 @@ RUN apk update && \
 # Add optional packages
 RUN grep -v '^#' /tmp/packages.wolfi | xargs apk add && \
     if [[ "${IMAGE_NAME}" =~ "dx" ]]; then \
-        grep -v '^#' /tmp/packages.wolfi-dx | xargs apk add \
+    grep -v '^#' /tmp/packages.wolfi-dx | xargs apk add \
     ; fi && \
     echo "#!/bin/sh" >> /usr/bin/pinentry && \
     echo "exit 0" >> /usr/bin/pinentry && \
@@ -27,29 +27,29 @@ RUN grep -v '^#' /tmp/packages.wolfi | xargs apk add && \
 
 # DX: Include utilities available in the melange SDK
 RUN if [[ "${IMAGE_NAME}" =~ "dx" ]]; then \
-        cd /tmp && \
-        export PATH="/tmp/go/bin:${PATH}" && \
-        # go setup
-        export GOPATH="/tmp/go" && \
-        mkdir -p "${GOPATH}" && \
-        # goimports
-        go install golang.org/x/tools/cmd/goimports@latest && \
-        mkdir -p "/usr/bin" && \
-        mv "${GOPATH}/bin/goimports" "/usr/bin" && \
-        # melange
-        git clone https://github.com/chainguard-dev/melange.git && \
-        (cd melange && make melange install) && \
-        # apko
-        git clone https://github.com/chainguard-dev/apko.git && \
-        (cd apko && make apko install) && \
-        # wolfictl
-        git clone https://github.com/wolfi-dev/wolfictl.git && \
-        (cd wolfictl && make wolfictl install) && \
-        # yam
-        git clone https://github.com/chainguard-dev/yam.git && \
-        (cd yam && go build -v -o "/usr/bin/yam") && \
-        cd / && \
-        rm -rf /tmp/* \
+    cd /tmp && \
+    export PATH="/tmp/go/bin:${PATH}" && \
+    # go setup
+    export GOPATH="/tmp/go" && \
+    mkdir -p "${GOPATH}" && \
+    # goimports
+    go install golang.org/x/tools/cmd/goimports@latest && \
+    mkdir -p "/usr/bin" && \
+    mv "${GOPATH}/bin/goimports" "/usr/bin" && \
+    # melange
+    git clone https://github.com/chainguard-dev/melange.git && \
+    (cd melange && make melange install) && \
+    # apko
+    git clone https://github.com/chainguard-dev/apko.git && \
+    (cd apko && make apko install) && \
+    # wolfictl
+    git clone https://github.com/wolfi-dev/wolfictl.git && \
+    (cd wolfictl && make wolfictl install) && \
+    # yam
+    git clone https://github.com/chainguard-dev/yam.git && \
+    (cd yam && go build -v -o "/usr/bin/yam") && \
+    cd / && \
+    rm -rf /tmp/* \
     ; fi
 
 # Get Distrobox-host-exec and host-spawn
