@@ -66,12 +66,11 @@ ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
 
 # Make nix accessible for non-root user without systemd
 # https://gist.github.com/danmack/b76ef257e0fd9dda906b4c860f94a591
-RUN groupadd nix-users && \
+# NOTE: nix-users needs to exist on the host for complete functionality
+RUN groupadd -f nix-users && \
     chgrp nix-users /nix/var/nix/daemon-socket && \
-    chmod ug=rwx,o= /nix/var/nix/daemon-socket
-
-RUN chmod a+rx /etc/init.d/nix-daemon && \
-    nix-daemon
+    chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
+    chmod a+rx /etc/init.d/nix-daemon
 
 # Get Distrobox-host-exec and host-spawn
 RUN git clone https://github.com/89luca89/distrobox.git --single-branch /tmp/distrobox && \
@@ -103,7 +102,8 @@ RUN mkdir -p /usr/local/bin  && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/tailscale && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/systemctl && \
     ln -fs /usr/bin/distrobox-host-exec /usr/local/bin/journalctl && \
-    ln -fs /usr/bin/distrobox-host-exec /usr/bin/python
+    ln -fs /usr/bin/distrobox-host-exec /usr/bin/python && \
+    ln -fs /usr/bin/distrobox-host-exec /usr/bin/python3
 
 # Change root shell to BASH
 RUN sed -i -e '/^root/s/\/bin\/ash/\/bin\/bash/' /etc/passwd
