@@ -54,7 +54,7 @@ This creates the normal `nix` installation directory in `/nix` on the container.
 2. Ensure the default user on your system has access to `/nix/var/nix/daemon-socket`
 ```
 # Containerfile.cli
-RUN groupadd -f 1000 && \
+RUN addgroup -g 1000 -S 1000 && adduser -u 1000 -S 1000 -G 1000 && \
     chgrp 1000 /nix/var/nix/daemon-socket && \
     chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
     chmod a+rx /etc/init.d/nix-daemon
@@ -88,7 +88,20 @@ This probably could be done using `openrc` instead of a disowned shell process, 
 
 This example uses `home-manager` to manage package installations. Your packages will be built directly on the host's `/home` directory, so re-builds won't be necessary when the container starts/stops.
 
-TODO
+#### TODO
+
+It's not actually true that packages are built in `/home/` in the current state of this repository -- they're build in `/nix/store` and are therefore wiped with each container update.
+
+Ideas:
+
+- install nix somewhere other than `/nix`. See:
+  - https://nixos.wiki/wiki/Storage_optimization#Moving_the_store
+- have a nix store server that this container can pull when created. See:
+  - https://yrh.dev/blog/nix-in-custom-location/ for a general overview/example
+  - https://nix.dev/manual/nix/2.24/package-management/ssh-substituter.html if i'm selfhosting the nix store
+  - https://discourse.nixos.org/t/recommendations-for-introducing-a-shared-nix-store-or-cache-for-ci-cd-and-development/15248/2 for explanation of the above
+  - this flox thing? https://discourse.nixos.org/t/recommendations-for-introducing-a-shared-nix-store-or-cache-for-ci-cd-and-development/15248/4
+  - 
 
 #### References
 
