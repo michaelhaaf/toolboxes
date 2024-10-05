@@ -65,7 +65,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
 ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
 
 # Make nix accessible for non-root user without systemd
-RUN groupadd -f 1000 && \
+RUN addgroup -g 1000 && \
     chgrp 1000 /nix/var/nix/daemon-socket && \
     chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
     chmod a+rx /etc/init.d/nix-daemon
