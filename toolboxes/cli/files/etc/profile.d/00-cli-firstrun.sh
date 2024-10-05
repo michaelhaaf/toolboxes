@@ -18,7 +18,7 @@ if test "$(id -u)" -gt "0"; then
   if test ! -d /nix/var/log/nix-daemon; then
     printf "Starting nix-daemon...\t\t\t "
     sudo mkdir -p /nix/var/log/nix-daemon/
-    sudo nix-daemon 2>&1 | sudo tee "/nix/var/log/nix-daemon/$(date -I seconds).log" > /dev/null & disown
+    sudo rc-service nix-daemon start
     printf "%s[ OK ]%s\n" "${blue}" "${normal}"
   fi
 

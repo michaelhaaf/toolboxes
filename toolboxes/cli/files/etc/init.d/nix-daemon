@@ -1,7 +1,7 @@
 #!/sbin/openrc-run
 description="Nix multi-user support daemon"
 
-command="/nix/var/nix/profiles/default/bin/nix-daemon"
+# command="/nix/var/nix/profiles/default/bin/nix-daemon"
+command="/nix/var/nix/profiles/default/bin/nix-daemon > /nix/var/log/nix-daemon/$(date -I seconds).log 2>&1 & disown"
 command_background="yes"
 pidfile="/run/$RC_SVCNAME.pid"
-# /nix/var/nix/profiles/default/bin/nix-daemon 2>&1 | tee "/nix/var/log/nix-daemon/$(date -I seconds).log" > /dev/null & disown
