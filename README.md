@@ -36,7 +36,48 @@ In addition to the images defined in [ublue-os/toolboxes][upstream], this reposi
 
 ### Installing `nix`
 
-TODO
+This container uses `nix-daemon` to provide a non-root user `nix` runtime environment. The following steps are needed:
+
+1. Install `nix` using the [determinate systems nix installer][determinate-systems]:
+
+```
+# Containerfile.cli
+RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
+    --extra-conf "sandbox = false" \
+    --init none \
+    --no-confirm
+ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+```
+
+This creates the normal `nix` installation directory in `/nix` on the container.
+
+2. Ensure the default user on your system has access to `/nix/var/nix/daemon-socket`
+```
+# Containerfile.cli
+RUN groupadd -f 1000 && \
+    chgrp 1000 /nix/var/nix/daemon-socket && \
+    chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
+    chmod a+rx /etc/init.d/nix-daemon
+```
+When `nix-daemon` is running, users can make requests to `nix-daemon` via this socket. It is probably dangerous to let just any user access the socket, so I'm using a group permissions setting to keep access limited.
+
+3. Run `nix-daemon` on container start-up
+
+Since alpine/wolfi-os do not have `systemd`, you need to start the daemon yourself. 
+
+```
+# 00-cli-firstrun.sh
+  if test ! -d /nix/var/log/nix-daemon; then
+    printf "Starting nix-daemon...\t\t\t "
+    sudo mkdir -p /nix/var/log/nix-daemon/
+    sudo nix-daemon 2>&1 | sudo tee "/nix/var/log/nix-daemon/$(date -I seconds).log" > /dev/null & disown
+    printf "%s[ OK ]%s\n" "${blue}" "${normal}"
+  fi
+```
+
+This probably could be done using `openrc` instead of a disowned shell process, but I couldn't get `openrc` to work. I might try again later.
+
+#### References
 
 - https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#in-a-container
 - https://gist.github.com/danmack/b76ef257e0fd9dda906b4c860f94a591#nix-package-manager-install-on-alpine-linux
@@ -45,7 +86,13 @@ TODO
 
 ### Using `nix`
 
+This example uses `home-manager` to manage package installations. Your packages will be built directly on the host's `/home` directory, so re-builds won't be necessary when the container starts/stops.
+
 TODO
+
+#### References
+
+- https://juliu.is/tidying-your-home-with-nix/
 
 ## Automatic Startup Configuration
 
@@ -211,3 +258,4 @@ You can make sure this is happening by running commands such as `systemctl statu
 [systemd-unit]: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
 [bluefin-cli]: https://universal-blue.discourse.group/t/the-bluefin-cli-container/704
 [ben-finegold-confusing-the-audience]: https://www.youtube.com/watch?v=qVt6nglrmh4
+[determinate-systems]: https://install.determinate.systems/nix
