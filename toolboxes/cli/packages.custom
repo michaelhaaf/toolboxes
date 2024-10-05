@@ -1,4 +1,3 @@
-openrc
 atuin
 bat
 delta
@@ -24,7 +23,5 @@ yq
 btop
 lazygit
 gettext
-neovim
-emacs
 strace
 fontconfig

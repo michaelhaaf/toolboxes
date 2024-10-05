@@ -67,8 +67,7 @@ ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
 # Make nix accessible for non-root user without systemd
 # https://gist.github.com/danmack/b76ef257e0fd9dda906b4c860f94a591
 # NOTE: nix-users needs to exist on the host for complete functionality
-RUN groupadd -f nix-users && \
-    chgrp nix-users /nix/var/nix/daemon-socket && \
+RUN chgrp 1000 /nix/var/nix/daemon-socket && \
     chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
     chmod a+rx /etc/init.d/nix-daemon
 
