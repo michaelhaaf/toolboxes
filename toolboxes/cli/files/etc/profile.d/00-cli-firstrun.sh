@@ -18,6 +18,10 @@ if test "$(id -u)" -gt "0"; then
   if test ! -f /etc/cli.home-manager-init; then
     printf "Initializing nix home-manager...\t\t\t "
     sudo touch /etc/cli.home-manager-init
+    if ! pgrep -x nix-daemon > /dev/null; then
+      sudo rc-service nix-daemon restart
+      sudo rc-service nix-daemon status
+    fi
     cd ~/.config/home-manager/
     nix run . switch
     cd -
