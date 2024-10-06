@@ -64,17 +64,22 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
     --no-confirm
 ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
 
+# Openrc hack
+# https://github.com/gliderlabs/docker-alpine/issues/437#issuecomment-494200575
+VOLUME [ "/sys/fs/cgroup" ]
+
+# Openrc hack
+RUN mkdir -p /run/openrc && \
+    touch /run/openrc/softlevel
+
 # Make nix accessible for non-root user without systemd
 RUN addgroup -g 1000 -S 1000 && adduser -u 1000 -S 1000 -G 1000 && \
     chgrp 1000 /nix/var/nix/daemon-socket && \
     chmod ug=rwx,o= /nix/var/nix/daemon-socket && \
     chmod a+rx /etc/init.d/nix-daemon && \
-    rc-update add nix-daemon default
-
-# Openrc hack
-# https://github.com/gliderlabs/docker-alpine/issues/437#issuecomment-494200575
-VOLUME [ "/sys/fs/cgroup" ]
-
+    rc-update add nix-daemon default && \
+    rc-status && \
+    rc-service nix-daemon start
 
 # Get Distrobox-host-exec and host-spawn
 RUN git clone https://github.com/89luca89/distrobox.git --single-branch /tmp/distrobox && \

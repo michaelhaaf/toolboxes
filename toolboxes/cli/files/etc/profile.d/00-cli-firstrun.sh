@@ -15,11 +15,12 @@ if test "$(id -u)" -gt "0"; then
     printf "%s[ OK ]%s\n" "${blue}" "${normal}"
   fi
 
-  if test ! -d /nix/var/log/nix-daemon; then
-    printf "Starting nix-daemon...\t\t\t "
-    sudo mkdir -p /nix/var/log/nix-daemon/
-    sudo rc-status
-    sudo rc-service nix-daemon start
+  if test ! -f /etc/cli.home-manager-init; then
+    printf "Initializing nix home-manager...\t\t\t "
+    sudo touch /etc/cli.home-manager-init
+    cd ~/.config/home-manager/
+    nix run . switch
+    cd -
     printf "%s[ OK ]%s\n" "${blue}" "${normal}"
   fi
 
